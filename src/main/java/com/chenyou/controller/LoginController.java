@@ -3,6 +3,7 @@ package com.chenyou.controller;
 import com.chenyou.Constants.ApplicationConstants;
 import com.chenyou.base.BizException;
 import com.chenyou.pojo.CrmAccount;
+import com.chenyou.pojo.User;
 import com.chenyou.utils.MD5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -31,29 +32,30 @@ import java.util.Map;
 public class LoginController {
 
     /*
-    *
-    * 用户登录
-    * @author hlx
-    * @date 2018\11\22 0022 11:29
-    * @param [crmAccount, request]
-    * @return java.util.Map<java.lang.String,java.lang.Object>
-    */
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public Map<String,Object> login(CrmAccount crmAccount, HttpServletRequest request) throws BizException {
+     *
+     * 用户登录
+     * @author hlx
+     * @date 2018\11\22 0022 11:29
+     * @param [crmAccount, request]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Map <String, Object> login(User user, HttpServletRequest request) throws BizException {
         Map <String, Object> resultMap = new HashMap <>();
         //1.获取到subject主体
         Subject subject = SecurityUtils.getSubject();
         //2.创建令牌
-        UsernamePasswordToken token = new UsernamePasswordToken(crmAccount.getLoginName(), MD5Utils.md5(crmAccount.getPassword()));
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), MD5Utils.md5(user.getPassword()));
         //3.进行验证
+        User uu;
         try {
             subject.login(token);
             //3.1验证成功,将CrmAccount放入session中
-            CrmAccount crm = (CrmAccount) subject.getPrincipal();
-            if (crmAccount.getEnable() != crm.getEnable()) {
+            uu = (User) subject.getPrincipal();
+            if (user.getEnable() != uu.getEnable()) {
                 throw new BizException(BizException.CODE_PARM_LACK, "请选择对应的登录类型!");
             }
-            request.getSession().setAttribute("crm", crm);
+            request.getSession().setAttribute("user", uu);
             resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
         } catch (AuthenticationException e) {
             e.printStackTrace();
@@ -61,7 +63,6 @@ public class LoginController {
         }
         return resultMap;
     }
-
 
 
 }
