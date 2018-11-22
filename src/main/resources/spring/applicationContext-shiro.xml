@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <!-- 配置shire的过滤器工厂 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 注入安全管理器：securityManager -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 未登录跳转界面：loginUrl -->
+        <property name="loginUrl" value="/login.html"/>
+        <!-- 登录成功跳转界面：successUrl -->
+        <property name="successUrl" value="/index.html"/>
+        <!-- 权限不足跳转界面：unauthorizedUrl -->
+        <property name="unauthorizedUrl" value="/unauthorizedUrl.html"/>
+        <!-- 校验规则：filterChainDefinitions -->
+        <property name="filterChainDefinitions">
+            <value>
+                /css/** = anon
+                /fonts/** = anon
+                /js/** = anon
+                /login.html = anon
+                /login.do = anon
+                /login_error.html=anon
+                /** = authc
+            </value>
+        </property>
+    </bean>
+    <!-- 配置安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="loginRealm"/>
+        <!-- 注入缓存管理器 -->
+        <property name="cacheManager" ref="ehcacheManager"/>
+    </bean>
+    <!--loginRealm-->
+    <bean id="loginRealm" class="com.chenyou.service.realm.LoginRealm"></bean>
+
+    <!-- 配置缓存管理器 -->
+    <bean id="ehcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <!-- 注入初始化配置文件 -->
+        <property name="cacheManagerConfigFile" value="classpath:ehcache/ehcache.xml"/>
+    </bean>
+</beans>
