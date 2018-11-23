@@ -1,9 +1,7 @@
 package com.chenyou.service.realm;
 
 import com.chenyou.base.BizException;
-import com.chenyou.pojo.CrmAccount;
 import com.chenyou.pojo.User;
-import com.chenyou.service.CrmAccountService;
 import com.chenyou.service.UserService;
 import com.chenyou.utils.StringUtils;
 import org.apache.shiro.authc.*;

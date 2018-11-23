@@ -2,6 +2,7 @@ package com.chenyou.service;
 
 import com.chenyou.base.BizException;
 import com.chenyou.pojo.User;
+import com.chenyou.pojo.entity.PageResult;
 
 /**
  * java类简单作用描述
@@ -59,5 +60,8 @@ public interface UserService {
     * @return java.lang.String
     */
     String checkLoginNameUnique(User user) throws BizException;
+
+
+    PageResult findPage(int pageNum,int PageSize) throws BizException;
 
 }

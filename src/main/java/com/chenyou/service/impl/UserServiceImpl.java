@@ -1,17 +1,20 @@
 package com.chenyou.service.impl;
 
-import com.chenyou.Constants.ApplicationConstants;
 import com.chenyou.base.BizException;
 import com.chenyou.base.constant.UserConstants;
 import com.chenyou.mapper.UserMapper;
 import com.chenyou.pojo.User;
+import com.chenyou.pojo.entity.PageResult;
 import com.chenyou.service.UserService;
 import com.chenyou.utils.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * java类简单作用描述
@@ -82,5 +85,16 @@ public class UserServiceImpl implements UserService {
             throw new BizException(BizException.CODE_PARM_LACK,"用户名"+user.getLoginName()+"已经存在!");
         }
         return UserConstants.USER_PHONE_UNIQUE;
+    }
+
+    @Override
+    public PageResult findPage(int pageNum, int PageSize) throws BizException {
+        PageHelper.startPage(pageNum,PageSize);
+        List <User> list = userMapper.selectByExample(null);
+        if(StringUtils.isEmpty(list)){
+            throw new BizException(BizException.CODE_PARM_LACK,"不好意思当前没有数据!");
+        }
+        Page<User> page=(Page<User>)list;
+        return new PageResult(page.getTotal(),page.getResult());
     }
 }

@@ -2,15 +2,10 @@ package com.chenyou.controller;
 
 import com.chenyou.Constants.ApplicationConstants;
 import com.chenyou.base.BizException;
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -53,15 +48,6 @@ public class BaseController {
         }
         return resultMap;
     }
-
-
-    @ExceptionHandler({UnauthorizedException.class, AuthorizationException.class})
-    public Map<String, Object> authorizationException(HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> resultMaP = new HashMap<>();
-        resultMaP.put(ApplicationConstants.TAG_SC_ERRORMSG, "不好意思，您的权限不足!");
-        return resultMaP;
-    }
-
 
 
 }

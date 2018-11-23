@@ -27,6 +27,13 @@ public class DateUtil {
         return dateFormat.format(date);
     }
 
+    public static String format2(Date date,String format){
+        if(null == format)
+            format = "yyyy-MM-dd hh:mm:ss";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(date);
+    }
+
     public static Date parse(String date) throws ParseException {
         SimpleDateFormat dateFormat = (SimpleDateFormat)threadLocal.get();
         if(null == dateFormat){
@@ -186,6 +193,10 @@ public class DateUtil {
     public  static String  format1(Date date){
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         return sdf.format(date);
+    }
+    public  static Date  parse1(String parse) throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return sdf.parse(parse);
     }
 
 

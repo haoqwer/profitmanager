@@ -28,7 +28,6 @@
                 /js/** = anon
                 /login.html = anon
                 /login.do = anon
-                /login_error.html=anon
                 /** = authc
             </value>
         </property>

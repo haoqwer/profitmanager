@@ -3,9 +3,9 @@ package com.chenyou.controller;
 import com.chenyou.Constants.ApplicationConstants;
 import com.chenyou.base.BizException;
 import com.chenyou.pojo.User;
+import com.chenyou.pojo.entity.PageResult;
 import com.chenyou.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +25,8 @@ import java.util.Map;
  * @Version: 1.0
  **/
 @RestController
-@RequestMapping
-public class UserController {
+@RequestMapping("/user")
+public class UserController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -40,12 +40,18 @@ public class UserController {
     * @param [user]
     * @return java.util.Map<java.lang.String,java.lang.Object>
     */
-    @RequestMapping(value = "saveUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
     public Map <String, Object> resultMap(User user) throws BizException {
         Map <String, Object> resultMap = new HashMap <>();
         resultMap.put(ApplicationConstants.TAG_DATA, userService.saveUser(user));
         resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
         return resultMap;
+    }
+
+
+    @RequestMapping(value = "/findPage", method = RequestMethod.GET)
+    public PageResult findPage(int page, int rows) throws BizException {
+        return userService.findPage(page, rows);
     }
 
 }

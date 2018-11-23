@@ -1,5 +1,6 @@
 package com.chenyou.base;
 
+import com.chenyou.utils.StringUtils;
 
 public class BizException extends Exception {
 
@@ -15,13 +16,12 @@ public class BizException extends Exception {
 
     private String code;
     public BizException(String code, String message) {
+
         super(message);
         this.code = code;
     }
 
     public String getCode() {
-        System.out.println("----");
-        System.out.println("--");
         return code;
     }
 

@@ -2,7 +2,6 @@ package com.chenyou.controller;
 
 import com.chenyou.Constants.ApplicationConstants;
 import com.chenyou.base.BizException;
-import com.chenyou.pojo.CrmAccount;
 import com.chenyou.pojo.User;
 import com.chenyou.utils.MD5Utils;
 import org.apache.shiro.SecurityUtils;
@@ -29,7 +28,7 @@ import java.util.Map;
  * @Version: 1.0
  **/
 @RestController
-public class LoginController {
+public class LoginController  extends  BaseController{
 
     /*
      *

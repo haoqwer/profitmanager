@@ -27,7 +27,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/bizGame")
-public class BizGameController {
+public class BizGameController extends  BaseController{
 
 
     @Autowired

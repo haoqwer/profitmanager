@@ -2,7 +2,9 @@ package com.chenyou.test;
 
 import com.chenyou.base.BizException;
 import com.chenyou.mapper.BizGameMapper;
+import com.chenyou.mapper.GameSubContractMapper;
 import com.chenyou.pojo.BizGame;
+import com.chenyou.pojo.GameSubContract;
 import com.chenyou.service.BizGameService;
 import com.chenyou.utils.DateUtil;
 import org.junit.Test;
@@ -35,6 +37,9 @@ public class BizGameTest {
 
     @Autowired
     private BizGameMapper bizGameMapper;
+
+    @Autowired
+    private GameSubContractMapper gameSubContractMapper;
 
     /*
     *
@@ -98,6 +103,59 @@ public class BizGameTest {
             System.out.println(b);
         }
     }
+
+
+    /*
+    *
+    * 管理员账户查询数据
+    * @author hlx
+    * @date 2018\11\23 0023 17:30
+    * @param
+    * @return
+    */
+    @Test
+    public  void test_findByListSubContract(){
+        List <GameSubContract> list = gameSubContractMapper.findListGameSubByTime("2018-11-23");
+        for(GameSubContract subContract:list){
+            System.out.println(subContract);
+        }
+    }
+
+
+    @Test
+    public void test_test_findByListSubContractTimes(){
+        List <GameSubContract> list= gameSubContractMapper.findListGameSubByTimes("2018-11-23","2018-11-24");
+        for(GameSubContract subContract:list){
+            System.out.println(subContract);
+        }
+    }
+
+    /*
+    *  
+    * 根据channelId和start查询
+    * @author hlx
+    * @date 2018\11\23 0023 17:45
+    * @param []
+    * @return void
+    */
+    @Test
+    public  void test_findByChannelIdAndTime(){
+        List <GameSubContract> list= gameSubContractMapper.findListGameSubByTimeAndChannelId("1001",DateUtil.format(new Date()));
+        for(GameSubContract subContract:list){
+            System.out.println(subContract);
+        }
+    }
+
+    @Test
+    public  void test_findByChannelIdAndTimes(){
+        List <GameSubContract> list= gameSubContractMapper.findListGameSubByTimesAndChannelId("1001",DateUtil.format(new Date()),DateUtil.format(new Date()));
+        for(GameSubContract subContract:list){
+            System.out.println(subContract);
+        }
+    }
+
+
+
 
 }
 
