@@ -28,7 +28,7 @@ import java.util.Map;
  * @Version: 1.0
  **/
 @RestController
-public class LoginController  extends  BaseController{
+public class LoginController extends BaseController {
 
     /*
      *
@@ -51,9 +51,9 @@ public class LoginController  extends  BaseController{
             subject.login(token);
             //3.1验证成功,将CrmAccount放入session中
             uu = (User) subject.getPrincipal();
-            if (user.getEnable() != uu.getEnable()) {
-                throw new BizException(BizException.CODE_PARM_LACK, "请选择对应的登录类型!");
-            }
+//            if (user.getEnable() != uu.getEnable()) {
+//                throw new BizException(BizException.CODE_PARM_LACK, "请选择对应的登录类型!");
+//            }
             request.getSession().setAttribute("user", uu);
             resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
         } catch (AuthenticationException e) {
@@ -61,6 +61,36 @@ public class LoginController  extends  BaseController{
             resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_FAIL);
         }
         return resultMap;
+    }
+
+    /*
+    *
+    * 用户退出
+    * @author hlx
+    * @date 2018\11\26 0026 11:46
+    * @param []
+    * @return java.lang.String
+    */
+    @RequestMapping("/logout")
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return "login";
+    }
+
+    /**
+    *
+    * 获取当前用户
+    * @author hlx
+    * @date 2018\11\26 0026 11:46
+    * @param
+    * @return com.chenyou.pojo.User
+    */
+    @RequestMapping("/getUser")
+    public User getUser() {
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        return user;
     }
 
 

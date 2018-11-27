@@ -49,7 +49,14 @@ public class SubContractController extends BaseController {
     @Autowired
     private GameSubContractService gameSubContractService;
 
-
+    /*
+     *
+     * 分包报表导入文件
+     * @author hlx
+     * @date 2018\11\26 0026 9:34
+     * @param [filename, request]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
     @RequestMapping(value = "/importSubContract", method = RequestMethod.POST)
     public Map <String, Object> importSubContract(@RequestParam("filename") MultipartFile filename, HttpServletRequest request) throws BizException, IOException, ParseException {
         Map <String, Object> resultMap = new HashMap <>();
@@ -58,7 +65,6 @@ public class SubContractController extends BaseController {
             throw new BizException(BizException.CODE_PARM_LACK, "请选择你要上传的文件!");
         }
         List <GameSubContract> list = new ArrayList <>();
-
         MultipartRequest multipartRequest = (MultipartRequest) request;
         MultipartFile excelFile = multipartRequest.getFile("filename");
         HSSFWorkbook workbook = new HSSFWorkbook(excelFile.getInputStream());
@@ -66,6 +72,7 @@ public class SubContractController extends BaseController {
         if (sheetAt.getLastRowNum() == 0) {
             throw new BizException(BizException.CODE_PARM_LACK, "导入的数据不能没有内容!");
         }
+        //2.从excel中获取到所有的内容
         System.out.println(sheetAt.getLastRowNum());
         for (Row row : sheetAt) {
             int rowNum = row.getRowNum();
@@ -88,7 +95,8 @@ public class SubContractController extends BaseController {
                 gameSubContract.setMessageFee(Integer.parseInt(message));
             }
             if (!StringUtils.isEmpty(clear)) {
-                gameSubContract.setAccountcleark(Integer.parseInt(clear));
+                //Double.parseDouble(clear)
+                gameSubContract.setAccountcleark(Double.parseDouble(clear));
             }
             if (!StringUtils.isEmpty(recordTime)) {
                 gameSubContract.setRecordTime(recordTime);
@@ -98,12 +106,21 @@ public class SubContractController extends BaseController {
             }
             list.add(gameSubContract);
         }
+        //3.开始插入数据
         resultMap.put(ApplicationConstants.TAG_DATA, gameSubContractService.saveGameSubContract(list));
         resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
         return resultMap;
     }
 
 
+    /*
+     *
+     * 不同的用户登录进入展示的列表
+     * @author hlx
+     * @date 2018\11\26 0026 9:34
+     * @param [page, rows]
+     * @return com.chenyou.pojo.entity.PageResult
+     */
     @RequestMapping(value = "/findPage", method = RequestMethod.GET)
     public PageResult findPage(int page, int rows) throws BizException {
         Subject subject = SecurityUtils.getSubject();
@@ -114,10 +131,20 @@ public class SubContractController extends BaseController {
         if (user.getLoginName().equals("admin")) {
             return gameSubContractService.findPage(page, rows);
         } else {
-            return gameSubContractService.findPage(page, rows, user.getChannelId());
+            String channelId = user.getChannelId();
+            String[] channelIds = channelId.split(",");
+            return gameSubContractService.findPage(page, rows, channelIds);
         }
     }
 
+    /*
+     *
+     * 不同的用户进行查询
+     * @author hlx
+     * @date 2018\11\26 0026 9:38
+     * @param [page, rows, start, end]
+     * @return com.chenyou.pojo.entity.PageResult
+     */
     @RequestMapping(value = "findSearch", method = RequestMethod.GET)
     public PageResult findSearch(int page, int rows, String start, String end) throws BizException, ParseException {
         Subject subject = SecurityUtils.getSubject();
@@ -128,13 +155,18 @@ public class SubContractController extends BaseController {
         if (user.getLoginName().equals("admin")) {
             return gameSubContractService.findAdmin(page, rows, start, end);
         } else {
-            return gameSubContractService.findChannel(page, rows, start, end, user.getChannelId());
+            String channelId = user.getChannelId();
+            String[] channelIds = channelId.split(",");
+            if (start==null && end==null) {
+               return   gameSubContractService.findPage(page, rows, channelIds);
+            }else {
+                return gameSubContractService.findChannel(page, rows, start, end, channelIds);
+            }
         }
     }
 
 
-
-    @RequestMapping(value = "exportListGameSub",method = RequestMethod.GET)
+    @RequestMapping(value = "exportListGameSub", method = RequestMethod.GET)
     public void exportListGameSub(HttpServletRequest request, HttpServletResponse response, String start, String end) throws BizException, ParseException, IOException {
         List <Map <String, Object>> list = new ArrayList <>();
         Map <String, Object> map1 = new HashMap <>();
@@ -147,9 +179,21 @@ public class SubContractController extends BaseController {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思当前账户信息不存在!!!");
         }
         if (user.getLoginName().equals("admin")) {
-            gameSubContracts = gameSubContractService.findListByAdmin(start, end);
+            if (start.equals("null") && end.equals("null")) {
+                gameSubContracts = gameSubContractService.findList();
+            } else {
+                gameSubContracts = gameSubContractService.findListByAdmin(start, end);
+            }
         } else {
-            gameSubContracts = gameSubContractService.findListByChannel(start, end, user.getChannelId());
+            if (start.equals("null") && end.equals("null")) {
+                String channelId = user.getChannelId();
+                String[] channelIds = channelId.split(",");
+                gameSubContracts = gameSubContractService.findList(channelIds);
+            } else {
+                String channelId = user.getChannelId();
+                String[] channelIds = channelId.split(",");
+                gameSubContracts = gameSubContractService.findListByChannel(start, end, channelIds);
+            }
         }
         for (GameSubContract gameSubContract : gameSubContracts) {
             Map <String, Object> map = new HashMap <>();
@@ -163,7 +207,7 @@ public class SubContractController extends BaseController {
         String[] keys = {"channelId", "newAdd", "messageFee", "accountcleark", "recordTime"};
         String[] columnNames = {"渠道号", "新增", "信息费", "结算款", "日期"};
         Workbook wb = ExcelUtil.createWorkBook(list, keys, columnNames);
-// 设置下载参数：一个流两个头
+        // 设置下载参数：一个流两个头
         String filename = DateUtil.format(new Date()) + "-->分包报表.xls";
         //获取浏览器请求头中的User-Agent参数
         String agent = request.getHeader("User-Agent");

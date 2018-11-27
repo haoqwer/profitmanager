@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.swing.text.EditorKit;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class GameSubContractServiceImpl implements GameSubContractService {
             throw new BizException(BizException.CODE_PARM_LACK, "不好一起,请输入插入的数据!");
         }
         for (GameSubContract gameSubContract : gameSubContractList) {
-            gameSubContract.setRecordTime(DateUtil.format1(new Date()));
             i = gameSubContractMapper.insertSelective(gameSubContract);
             i++;
         }
@@ -71,16 +71,25 @@ public class GameSubContractServiceImpl implements GameSubContractService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /*
+    *
+    * 渠道展示数据列表
+    * @author hlx
+    * @date 2018\11\26 0026 9:36
+    * @param [pageNum, pageSize, channelIds]
+    * @return com.chenyou.pojo.entity.PageResult
+    */
     @Override
-    public PageResult findPage(int pageNum, int pageSize, String channelId) throws BizException {
+    public PageResult findPage(int pageNum, int pageSize, String[] channelIds) throws BizException {
         PageHelper.startPage(pageNum, pageSize);
-        if (StringUtils.isEmpty(channelId)) {
+        if (StringUtils.isEmpty(channelIds)) {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思当前用户不存在!");
         }
 
         GameSubContractExample example = new GameSubContractExample();
         GameSubContractExample.Criteria criteria = example.createCriteria();
-        criteria.andChannelIdEqualTo(channelId);
+//        criteria.andChannelIdEqualTo(channelId);
+        criteria.andChannelIdIn(Arrays.asList(channelIds));
         List <GameSubContract> list = gameSubContractMapper.selectByExample(example);
         if (StringUtils.isEmpty(list)) {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思当前没有可以展示的数据!");
@@ -103,7 +112,7 @@ public class GameSubContractServiceImpl implements GameSubContractService {
         List <GameSubContract> list = new ArrayList <>();
         contition(start, end);
         if (!StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(start, end);
+            list = gameSubContractMapper.findListGameSubByTimes(start, end);
         }
 
         if (!StringUtils.isEmpty(start) && StringUtils.isEmpty(end)) {
@@ -120,22 +129,31 @@ public class GameSubContractServiceImpl implements GameSubContractService {
     }
 
 
+    /*
+    *
+    * 渠道查询
+    * @author hlx
+    * @date 2018\11\26 0026 9:41
+    * @param [pageNum, pageSize, start, end, channelId]
+    * @return com.chenyou.pojo.entity.PageResult
+    */
     @Override
-    public PageResult findChannel(int pageNum, int pageSize, String start, String end, String channelId) throws BizException, ParseException {
+    public PageResult findChannel(int pageNum, int pageSize, String start, String end, String[] channelIds) throws BizException, ParseException {
         PageHelper.startPage(pageNum, pageSize);
         List <GameSubContract> list = new ArrayList <>();
-        if (StringUtils.isEmpty(channelId)) {
+        if (StringUtils.isEmpty(channelIds)) {
             throw new BizException(BizException.CODE_PARM_LACK, "当前用户信息不存在或登录超时!");
         }
         contition(start, end);
         if (!StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimesAndChannelId(channelId, start, end);
+            System.out.println(channelIds);
+            list = gameSubContractMapper.findListGameSubByTimesAndChannelId(channelIds, start, end);
         }
         if (!StringUtils.isEmpty(start) && StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelId, start);
+            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelIds, start);
         }
         if (StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelId, end);
+            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelIds, end);
         }
         if (StringUtils.isEmpty(list)) {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思，没有查询的数据!");
@@ -144,14 +162,21 @@ public class GameSubContractServiceImpl implements GameSubContractService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /*
+    *
+    * 查询所有列表
+    * @author hlx
+    * @date 2018\11\26 0026 9:42
+    * @param [start, end]
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
     @Override
     public List <GameSubContract> findListByAdmin(String start, String end) throws ParseException, BizException {
         List <GameSubContract> list = new ArrayList <>();
         contition(start, end);
         if (!StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(start, end);
+            list = gameSubContractMapper.findListGameSubByTimes(start, end);
         }
-
         if (!StringUtils.isEmpty(start) && StringUtils.isEmpty(end)) {
             list = gameSubContractMapper.findListGameSubByTime(start);
         }
@@ -165,25 +190,47 @@ public class GameSubContractServiceImpl implements GameSubContractService {
     }
 
     @Override
-    public List <GameSubContract> findListByChannel(String start, String end, String channelId) throws BizException, ParseException {
+    public List <GameSubContract> findListByChannel(String start, String end, String[] channelIds) throws BizException, ParseException {
         List <GameSubContract> list = new ArrayList <>();
-        if (StringUtils.isEmpty(channelId)) {
+        if (StringUtils.isEmpty(channelIds)) {
             throw new BizException(BizException.CODE_PARM_LACK, "当前用户信息不存在或登录超时!");
         }
         contition(start, end);
         if (!StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimesAndChannelId(channelId, start, end);
+            list = gameSubContractMapper.findListGameSubByTimesAndChannelId(channelIds, start, end);
         }
         if (!StringUtils.isEmpty(start) && StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelId, start);
+            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelIds, start);
         }
         if (StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {
-            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelId, end);
+            list = gameSubContractMapper.findListGameSubByTimeAndChannelId(channelIds, end);
         }
         if (StringUtils.isEmpty(list)) {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思，没有查询的数据!");
         }
         return list;
+    }
+
+    @Override
+    public List <GameSubContract> findList() {
+        return gameSubContractMapper.selectByExample(null);
+    }
+
+    /*
+    *
+    * 没有查询条件导出渠道
+    * @author hlx
+    * @date 2018\11\26 0026 9:44
+    * @param [channelId]
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
+    @Override
+    public List <GameSubContract> findList(String[] channelIds) {
+        GameSubContractExample example=new GameSubContractExample();
+        GameSubContractExample.Criteria criteria = example.createCriteria();
+//        criteria.andChannelIdEqualTo(channelId);
+        criteria.andChannelIdIn(Arrays.asList(channelIds));
+        return  gameSubContractMapper.selectByExample(example);
     }
 
     public static void contition(String start, String end) throws ParseException {

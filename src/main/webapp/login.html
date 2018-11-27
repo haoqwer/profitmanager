@@ -1,116 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>分包</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        .login-page, html, body {
-            height: 100%;
-        }
-
-        .login-page {
-            padding-top: 150px;
-            background: #d2d6de;
-        }
-
-        .title {
-            text-align: center;
-            font-size: 35px;
-            font-weight: bold;
-        }
-
-        .content {
-            width: 360px;
-            height: 267px;
-            margin: 50px auto 0;
-            padding: 20px;
-            background: #fff;
-            box-sizing: border-box;
-        }
-
-
-        .content> .tip {
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .content> input,.content> select {
-            outline: none;
-            width: 320px;
-            height: 34px;
-            padding: 6px 0 6px 12px;
-            margin-top: 15px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            border-radius: 8px;
-        }
-
-        .content> input:focus {
-            box-shadow: 0 0 2px 1px #89cbff;
-        }
-
-        .content> .btn-login {
-            width: 87px;
-            height: 34px;
-            margin: 15px auto 0;
-            background: #337ab7;
-            text-align: center;
-            line-height: 34px;
-            font-size: 14px;
-            color: #fff;
-            cursor: pointer;
-            user-select: none;
-            border-radius: 4px;
-        }
-        .content> .btn-login:hover {
-            background: #214f76;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>分包</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    
+    .login-page, html, body {
+      height: 100%;
+    }
+    
+    .login-page {
+      padding-top: 150px;
+      background: #d2d6de;
+    }
+    
+    .title {
+      text-align: center;
+      font-size: 35px;
+      font-weight: bold;
+    }
+    
+    .content {
+      width: 360px;
+      height: 267px;
+      margin: 50px auto 0;
+      padding: 20px;
+      background: #fff;
+      box-sizing: border-box;
+    }
+    
+    
+    .content > .tip {
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .content > input, .content > select {
+      outline: none;
+      width: 320px;
+      height: 34px;
+      padding: 6px 0 6px 12px;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+    
+    .content > input:focus {
+      box-shadow: 0 0 2px 1px #89cbff;
+    }
+    
+    .content > .btn-login {
+      width: 87px;
+      height: 34px;
+      margin: 15px auto 0;
+      background: #337ab7;
+      text-align: center;
+      line-height: 34px;
+      font-size: 14px;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 4px;
+    }
+    
+    .content > .btn-login:hover {
+      background: #214f76;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-page">
-        <div class="title">
-            分包管理
-        </div>
+<div class="login-page">
+  <div class="title">
+    分包管理
+  </div>
+  
+  <!-- content -->
+  <div class="content">
+    <div class="tip">请输入账户名和密码</div>
+    
+    <!-- 用户名 -->
+    <input class="username" autofocus placeholder="账号"/>
+    
+    <!-- 用户名 -->
+    <input class="password" type="password" placeholder="密码"/>
+    
+    
+    <!-- 登陆按钮 -->
+    <div class="btn-login">登录</div>
+  </div>
+</div>
 
-        <!-- content -->
-        <div class="content">
-            <div class="tip">请输入账户名和密码</div>
+<script>
+    setTimeout(ready, 0)
 
-            <!-- 用户名 -->
-            <input class="username" autofocus placeholder="账号"/>
-
-            <!-- 用户名 -->
-            <input class="password" placeholder="密码"/>
-
-            <!-- 用户名 -->
-            <select class="friends">
-                <option value="0">合作伙伴</option>
-                <option value="1">系统管理员</option>
-            </select>
-
-            <!-- 登陆按钮 -->
-            <div class="btn-login">登录</div>
-        </div>
-    </div>
-
-    <script>
-      setTimeout(ready, 0)
-
-      function ready() {
+    function ready() {
         //  登陆按钮
         var login = document.querySelector('.btn-login')
+        var usernamedom = document.querySelector('.username')
+        var passworddom = document.querySelector('.password')
 
-        login.onclick = function () {
-          window.location.href = '/'
+        login.onclick = loginFn
+        usernamedom.onkeydown = function (e) {
+            console.log(e)
+            if (e.keyCode === 13) {
+                loginFn()
+            }
         }
-      }
-    </script>
+        passworddom.onkeydown = function (e) {
+            console.log(e)
+            if (e.keyCode === 13) {
+                loginFn()
+            }
+        }
+        function loginFn () {
+            // 获取账号
+            var username = usernamedom.value
+
+            // 获取密码
+            var password = passworddom.value
+
+            // // 获取选择的身份
+            // var idCard = document.querySelector('.friends')
+            // idCard = idCard.options[idCard.selectedIndex].value
+
+            // 发送ajax
+            var ajax = new XMLHttpRequest()
+            ajax.open('post', '/login.do')
+
+            ajax.setRequestHeader('content-type', 'application/x-www-form-urlencoded')
+
+            var data = {
+                loginName: username,
+                password: password,
+                // enable: +idCard
+            }
+
+            var reqData = ''
+
+            for (var a in data) {
+                reqData += a + '=' + data[a] + '&'
+            }
+
+            reqData = reqData.slice(0, -1)
+            ajax.send(reqData)
+
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4) {
+
+                    if (ajax.status === 200) {
+                        var res = JSON.parse(ajax.responseText)
+                        if (res.sc === '0') {
+                            // 登录成功跳转首页
+                            window.location.href = '/'
+                            return
+                        }
+                    }
+                    alert('登陆失败')
+                }
+            }
+        }
+    }
+</script>
 </body>
 </html>

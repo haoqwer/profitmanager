@@ -10,6 +10,7 @@ import com.chenyou.utils.MD5Utils;
 import com.chenyou.utils.StringUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,14 +57,19 @@ public class UserServiceImpl implements UserService {
             throw new BizException(BizException.CODE_PARM_LACK, "请输入渠道名称!");
         }
         checkChannelIdUnique(user);
-        if (StringUtils.isEmpty(user.getChannelIds())) {
+        if (StringUtils.isEmpty(user.getChannelId())) {
             throw new BizException(BizException.CODE_PARM_LACK, "请输入渠道号!");
         }
-        //增加用户
-        for (int j = 0; j < user.getChannelIds().length; j++) {
-            channelIds = channelIds + user.getChannelIds()[j] + ",";
+        String channelId=user.getChannelId();
+        if(channelId.substring(0,1).equals(",")){
+            throw new BizException(BizException.CODE_PARM_LACK,"开头不能出现字符串!");
         }
-        user.setChannelId(channelIds);
+        int lastIndex=channelId.lastIndexOf(",");
+        int lastLength=channelId.length()-1;
+        if(lastIndex==lastLength){
+            channelId=channelId.substring(0,lastIndex);
+            user.setChannelId(channelId);
+        }
         user.setCreateTime(new Date());
         user.setEnable(1);
         user.setPassword(MD5Utils.md5(user.getPassword()));
@@ -117,12 +123,25 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public int addChannelId(User user) throws BizException {
-        //获取到之前的channelId
+        int i = 0;
+        String addChannelId = null;
+        String oldChannelId = null;
+        String[] oldChannelIds;
+        String[] addChanelIds;
         User oldUser = userMapper.selectByPrimaryKey(user.getId());
-        String oldChannelId = oldUser.getChannelId();
-        if(StringUtils.isEmpty(user.getChannelIds())){
-            throw new BizException(BizException.CODE_PARM_LACK,"请输入新增渠道ID");
+        //表示渠道新增Id
+        addChannelId = user.getChannelId();
+        oldChannelId = oldUser.getChannelId();
+        oldChannelIds = oldChannelId.split(",");
+        addChanelIds = addChannelId.split(",");
+        for (String add : addChanelIds) {
+            if (ArrayUtils.contains(oldChannelIds, add)) {
+                throw new BizException(BizException.CODE_PARM_LACK, "不好意思,渠道ID" + add + "已经存在!");
+            }
         }
-        return 0;
+        oldUser.setChannelId(oldChannelId + "," + addChannelId);
+        System.out.println(oldChannelId + addChannelId);
+        i = userMapper.updateByPrimaryKeySelective(oldUser);
+        return i;
     }
 }

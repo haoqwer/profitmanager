@@ -49,7 +49,7 @@ public interface GameSubContractService {
     * @param [pageNum, pageSize, channelId]
      * @return com.chenyou.pojo.entity.PageResult
      */
-    PageResult findPage(int pageNum, int pageSize, String channelId) throws BizException;
+    PageResult findPage(int pageNum, int pageSize, String[] channelIds) throws BizException;
 
     /*
      *
@@ -69,11 +69,18 @@ public interface GameSubContractService {
      * @param [start, end, channelId]
      * @return com.chenyou.pojo.entity.PageResult
      */
-    PageResult findChannel(int pageNum, int pageSize, String start, String end, String channelId) throws BizException, ParseException;
+    PageResult findChannel(int pageNum, int pageSize, String start, String end, String[] channelIds) throws BizException, ParseException;
 
     List <GameSubContract> findListByAdmin(String start, String end) throws ParseException, BizException;
 
-    List<GameSubContract> findListByChannel(String start,String end,String channelId) throws BizException, ParseException;
+    List<GameSubContract> findListByChannel(String start,String end,String[] channelIds) throws BizException, ParseException;
+
+
+
+    List<GameSubContract> findList();
+
+    List<GameSubContract> findList(String[] channelIds);
+
 
 
 

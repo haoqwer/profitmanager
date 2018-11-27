@@ -26,20 +26,20 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/user")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
 
 
     /*
-    *
-    * 新增用户
-    * @author hlx
-    * @date 2018\11\22 0022 21:16
-    * @param [user]
-    * @return java.util.Map<java.lang.String,java.lang.Object>
-    */
+     *
+     * 新增用户
+     * @author hlx
+     * @date 2018\11\22 0022 21:16
+     * @param [user]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
     @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
     public Map <String, Object> resultMap(User user) throws BizException {
         Map <String, Object> resultMap = new HashMap <>();
@@ -52,6 +52,20 @@ public class UserController extends BaseController{
     @RequestMapping(value = "/findPage", method = RequestMethod.GET)
     public PageResult findPage(int page, int rows) throws BizException {
         return userService.findPage(page, rows);
+    }
+
+
+    @RequestMapping(value = "/findOne", method = RequestMethod.GET)
+    public User findOne(Integer id) {
+        return userService.findOne(id);
+    }
+
+    @RequestMapping(value = "/addChannelId",method = RequestMethod.POST)
+    public  Map<String,Object> addChannelId(User user) throws BizException {
+        Map <String, Object> resultMap = new HashMap <>();
+        resultMap.put(ApplicationConstants.TAG_DATA, userService.addChannelId(user));
+        resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
+        return resultMap;
     }
 
 }

@@ -64,4 +64,12 @@ public interface UserService {
 
     PageResult findPage(int pageNum,int PageSize) throws BizException;
 
+
+    User findOne(Integer id);
+
+    int addChannelId(User user) throws BizException;
+
+
+
+
 }

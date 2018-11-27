@@ -2,6 +2,7 @@ package com.chenyou.test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -17,9 +18,11 @@ import java.util.Date;
  **/
 public class DateDemo {
     public static void main(String[] args) throws ParseException {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date=new Date();
-        System.out.println(sdf.format(date));
-        System.out.println(date);
+        String[] add = {"1001", "1002"};
+        String channelId = "";
+
+        System.out.println(channelId);
+        String[] channelIds = channelId.split(",");
+        System.out.println(Arrays.toString(channelIds));
     }
 }
