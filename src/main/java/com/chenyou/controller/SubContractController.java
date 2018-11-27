@@ -142,7 +142,7 @@ public class SubContractController extends BaseController {
      * @param [page, rows, start, end]
      * @return com.chenyou.pojo.entity.PageResult
      */
-    @RequestMapping(value = "findSearch", method = RequestMethod.GET)
+    @RequestMapping(value = "/findSearch", method = RequestMethod.GET)
     public PageResult findSearch(int page, int rows, String start, String end) throws BizException, ParseException {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
@@ -174,7 +174,7 @@ public class SubContractController extends BaseController {
      * @param [request, response, start, end]
      * @return void
      */
-    @RequestMapping(value = "exportListGameSub", method = RequestMethod.GET)
+    @RequestMapping(value = "/exportListGameSub", method = RequestMethod.GET)
     public void exportListGameSub(HttpServletRequest request, HttpServletResponse response, String start, String end) throws BizException, ParseException, IOException {
         List <Map <String, Object>> list = new ArrayList <>();
         Map <String, Object> map1 = new HashMap <>();
@@ -264,7 +264,7 @@ public class SubContractController extends BaseController {
      * @param [id]
      * @return com.chenyou.pojo.GameSubContract
      */
-    @RequestMapping(value = "getSubContract", method = RequestMethod.GET)
+    @RequestMapping(value = "/getSubContract", method = RequestMethod.GET)
     public GameSubContract getGameSubContract(Integer id) {
         return gameSubContractService.getGameSubContract(id);
     }
@@ -277,7 +277,7 @@ public class SubContractController extends BaseController {
     * @param [ids]
     * @return java.util.Map<java.lang.String,java.lang.Object>
     */
-    @RequestMapping(value = "deleteSubContract",method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteSubContract",method = RequestMethod.GET)
     public Map <String, Object> deleteSubContract(Integer[] ids) throws BizException {
         Map <String, Object> resultMap = new HashMap <>();
         resultMap.put(ApplicationConstants.TAG_DATA, gameSubContractService.deleteGameSubContract(ids));

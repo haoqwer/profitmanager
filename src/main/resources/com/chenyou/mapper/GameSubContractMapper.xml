@@ -300,11 +300,10 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-
   <select id="findListGameSubByTime" resultMap="BaseResultMap">
     SELECT * from t_game_subcontract  where  1=1
     <if test="start !=null and start != '' ">
-      and  DATE_FORMAT(record_time,'%Y-%m-%d')= #{start}
+      and  DATE_FORMAT(record_time,'%Y-%m-%d')= #{start,jdbcType=VARCHAR}
     </if>
   </select>
 
@@ -313,10 +312,10 @@
   <select id="findListGameSubByTimes" resultMap="BaseResultMap">
     SELECT * from t_game_subcontract  where 1=1
     <if test="start !=null and start != ''">
-      and DATE_FORMAT(record_time,'%Y-%m-%d')between #{start}
+      and DATE_FORMAT(record_time,'%Y-%m-%d')between #{start,jdbcType=VARCHAR}
     </if>
     <if test="end !=null and end != ''">
-      and #{end}
+      and #{end,jdbcType=VARCHAR}
     </if>
   </select>
 
@@ -326,11 +325,11 @@
     <if test="channelIds !=null and channelIds.length&gt;0">
       and channel_id in
       <foreach collection="channelIds" open="(" separator="," close=")" item="channelId">
-        #{channelId}
+        #{channelId,jdbcType=VARCHAR}
       </foreach>
     </if>
     <if test="start !=null and start !='' ">
-      and  DATE_FORMAT(record_time,'%Y-%m-%d')=#{start}
+      and  DATE_FORMAT(record_time,'%Y-%m-%d')=#{start,jdbcType=VARCHAR}
     </if>
   </select>
 
@@ -343,10 +342,10 @@
       </foreach>
     </if>
     <if test="start !=null and start != ''">
-      and DATE_FORMAT(record_time,'%Y-%m-%d')between  #{start}
+      and DATE_FORMAT(record_time,'%Y-%m-%d')between  #{start,jdbcType=VARCHAR}
     </if>
     <if test="end !=null and end != ''">
-      and #{end}
+      and #{end,jdbcType=VARCHAR}
     </if>
   </select>
 
