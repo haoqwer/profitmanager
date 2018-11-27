@@ -52,4 +52,12 @@ public class UserTest {
         user.setLoginName("adminfd");
         System.out.println(userService.checkLoginNameUnique(user));
     }
+
+
+    @Test
+    public  void test_equals(){
+        Integer i=489;
+        Integer j=489;
+        System.out.println(i==j.intValue());
+    }
 }

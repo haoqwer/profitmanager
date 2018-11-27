@@ -136,6 +136,17 @@ public interface GameSubContractService {
     GameSubContract getGameSubContract(Integer id);
 
 
+    /*
+    *
+    * 批量删除
+    * @author hlx
+    * @date 2018\11\27 0027 16:38
+    * @param [ids]
+    * @return int
+    */
+    int deleteGameSubContract(Integer[] ids) throws BizException;
+
+
 
 
 

@@ -279,6 +279,27 @@ public class GameSubContractServiceImpl implements GameSubContractService {
 
     /*
     *
+    * 进行批量删除
+    * @author hlx
+    * @date 2018\11\27 0027 16:39
+    * @param [ids]
+    * @return int
+    */
+    @Override
+    public int deleteGameSubContract(Integer [] ids) throws BizException {
+        int i=0;
+        if(StringUtils.isEmpty(ids)){
+            throw new BizException(BizException.CODE_PARM_LACK,"请选择进行批量删除的数据!");
+        }
+        for(Integer id :ids){
+            gameSubContractMapper.deleteByPrimaryKey(id.intValue());
+            i++;
+        }
+        return i;
+    }
+
+    /*
+    *
     * 将开始时间和结束时间进行比较如果开始大于结束则交换
     * @author hlx
     * @date 2018\11\27 0027 14:26

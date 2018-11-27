@@ -269,4 +269,20 @@ public class SubContractController extends BaseController {
         return gameSubContractService.getGameSubContract(id);
     }
 
+    /*
+    *
+    * 批量删除数据
+    * @author hlx
+    * @date 2018\11\27 0027 16:51
+    * @param [ids]
+    * @return java.util.Map<java.lang.String,java.lang.Object>
+    */
+    @RequestMapping(value = "deleteSubContract",method = RequestMethod.GET)
+    public Map <String, Object> deleteSubContract(Integer[] ids) throws BizException {
+        Map <String, Object> resultMap = new HashMap <>();
+        resultMap.put(ApplicationConstants.TAG_DATA, gameSubContractService.deleteGameSubContract(ids));
+        resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
+        return resultMap;
+    }
+
 }
