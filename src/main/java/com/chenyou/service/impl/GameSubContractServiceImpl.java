@@ -43,7 +43,7 @@ public class GameSubContractServiceImpl implements GameSubContractService {
     public int saveGameSubContract(List <GameSubContract> gameSubContractList) throws BizException {
         int i = 0;
         if (StringUtils.isEmpty(gameSubContractList)) {
-            throw new BizException(BizException.CODE_PARM_LACK, "不好一起,请输入插入的数据!");
+            throw new BizException(BizException.CODE_PARM_LACK, "不好意思,请输入插入的数据!");
         }
         for (GameSubContract gameSubContract : gameSubContractList) {
             i = gameSubContractMapper.insertSelective(gameSubContract);
@@ -233,6 +233,58 @@ public class GameSubContractServiceImpl implements GameSubContractService {
         return  gameSubContractMapper.selectByExample(example);
     }
 
+
+    /*
+    *
+    * 修改分包中的一条信息
+    * @author hlx
+    * @date 2018\11\27 0027 14:16
+    * @param [gameSubContract]
+    * @return int
+    */
+    @Override
+    public int updateGameSubContract(GameSubContract gameSubContract) throws BizException {
+        int i = 0;
+        if (StringUtils.isEmpty(gameSubContract.getChannelId())) {
+            throw new BizException(BizException.CODE_PARM_LACK, "请输入修改的渠道ID!");
+        }
+        if (null == gameSubContract.getAccountcleark()) {
+            throw new BizException(BizException.CODE_PARM_LACK, "请输入结算款!");
+        }
+        if (null == gameSubContract.getNewAdd()) {
+            throw new BizException(BizException.CODE_PARM_LACK, "请输入新增!");
+        }
+        if (null == gameSubContract.getMessageFee()) {
+            throw new BizException(BizException.CODE_PARM_LACK, "请输入信息费!");
+        }
+        if (StringUtils.isEmpty(gameSubContract.getRecordTime())) {
+            throw new BizException(BizException.CODE_PARM_LACK, "请输入日期!");
+        }
+        i = gameSubContractMapper.updateByPrimaryKeySelective(gameSubContract);
+        return i;
+    }
+
+    /*
+    *
+    * findOne查询
+    * @author hlx
+    * @date 2018\11\27 0027 14:27
+    * @param [id]
+    * @return com.chenyou.pojo.GameSubContract
+    */
+    @Override
+    public GameSubContract getGameSubContract(Integer id) {
+        return gameSubContractMapper.selectByPrimaryKey(id);
+    }
+
+    /*
+    *
+    * 将开始时间和结束时间进行比较如果开始大于结束则交换
+    * @author hlx
+    * @date 2018\11\27 0027 14:26
+    * @param [start, end]
+    * @return void
+    */
     public static void contition(String start, String end) throws ParseException {
         String temp;
         if (!StringUtils.isEmpty(start) && !StringUtils.isEmpty(end)) {

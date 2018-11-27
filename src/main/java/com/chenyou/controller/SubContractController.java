@@ -13,8 +13,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.omg.CORBA.PUBLIC_MEMBER;
-import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +25,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.*;
 
@@ -115,7 +112,7 @@ public class SubContractController extends BaseController {
 
     /*
      *
-     * 不同的用户登录进入展示的列表
+     * 用户登录进入展示的列表
      * @author hlx
      * @date 2018\11\26 0026 9:34
      * @param [page, rows]
@@ -139,7 +136,7 @@ public class SubContractController extends BaseController {
 
     /*
      *
-     * 不同的用户进行查询
+     * 用户进行查询
      * @author hlx
      * @date 2018\11\26 0026 9:38
      * @param [page, rows, start, end]
@@ -153,19 +150,30 @@ public class SubContractController extends BaseController {
             throw new BizException(BizException.CODE_PARM_LACK, "不好意思当前账户信息不存在!!!");
         }
         if (user.getLoginName().equals("admin")) {
+            if (start == null && end == null) {
+                return gameSubContractService.findPage(page, rows);
+            }
             return gameSubContractService.findAdmin(page, rows, start, end);
         } else {
             String channelId = user.getChannelId();
             String[] channelIds = channelId.split(",");
-            if (start==null && end==null) {
-               return   gameSubContractService.findPage(page, rows, channelIds);
-            }else {
+            if (start == null && end == null) {
+                return gameSubContractService.findPage(page, rows, channelIds);
+            } else {
                 return gameSubContractService.findChannel(page, rows, start, end, channelIds);
             }
         }
     }
 
 
+    /*
+     *
+     * 导出分包列表
+     * @author hlx
+     * @date 2018\11\27 0027 14:04
+     * @param [request, response, start, end]
+     * @return void
+     */
     @RequestMapping(value = "exportListGameSub", method = RequestMethod.GET)
     public void exportListGameSub(HttpServletRequest request, HttpServletResponse response, String start, String end) throws BizException, ParseException, IOException {
         List <Map <String, Object>> list = new ArrayList <>();
@@ -180,14 +188,17 @@ public class SubContractController extends BaseController {
         }
         if (user.getLoginName().equals("admin")) {
             if (start.equals("null") && end.equals("null")) {
+                //直接导出所有
                 gameSubContracts = gameSubContractService.findList();
             } else {
+                //直接根据时间判断导出
                 gameSubContracts = gameSubContractService.findListByAdmin(start, end);
             }
         } else {
             if (start.equals("null") && end.equals("null")) {
                 String channelId = user.getChannelId();
                 String[] channelIds = channelId.split(",");
+                //导出渠道id的所有分包数据
                 gameSubContracts = gameSubContractService.findList(channelIds);
             } else {
                 String channelId = user.getChannelId();
@@ -220,12 +231,42 @@ public class SubContractController extends BaseController {
         response.setContentType(mimeType);
         // 两个头之二：content-disposition，告诉浏览器打开返回数据的方法，attachment;filename=文件名
         response.setHeader("content-disposition", "attachment;filename=" + filename);
+        response.setHeader("content-Type", "application/vnd.ms-excel");
         // response的输出流将excel返回到前台
         try {
             wb.write(os);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+     *
+     * 修改分包
+     * @author hlx
+     * @date 2018\11\27 0027 14:37
+     * @param [gameSubContract]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @RequestMapping(value = "/updateSubContract", method = RequestMethod.POST)
+    public Map <String, Object> updateSubContract(GameSubContract gameSubContract) throws BizException {
+        Map <String, Object> resultMap = new HashMap <>();
+        resultMap.put(ApplicationConstants.TAG_DATA, gameSubContractService.updateGameSubContract(gameSubContract));
+        resultMap.put(ApplicationConstants.TAG_SC, ApplicationConstants.SC_OK);
+        return resultMap;
+    }
+
+    /*
+     *
+     * 查找分包
+     * @author hlx
+     * @date 2018\11\27 0027 14:37
+     * @param [id]
+     * @return com.chenyou.pojo.GameSubContract
+     */
+    @RequestMapping(value = "getSubContract", method = RequestMethod.GET)
+    public GameSubContract getGameSubContract(Integer id) {
+        return gameSubContractService.getGameSubContract(id);
     }
 
 }

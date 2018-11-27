@@ -71,15 +71,69 @@ public interface GameSubContractService {
      */
     PageResult findChannel(int pageNum, int pageSize, String start, String end, String[] channelIds) throws BizException, ParseException;
 
+    /*
+    *
+    * 查询时候没有条件的查询
+    * @author hlx
+    * @date 2018\11\27 0027 13:56
+    * @param [start, end]
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
     List <GameSubContract> findListByAdmin(String start, String end) throws ParseException, BizException;
 
+    /*
+    *
+    * 查询渠道
+    * @author hlx
+    * @date 2018\11\27 0027 13:57
+    * @param [start, end, channelIds]
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
     List<GameSubContract> findListByChannel(String start,String end,String[] channelIds) throws BizException, ParseException;
 
 
-
+    
+    /*
+    *  
+    * 
+    * @author hlx
+    * @date 2018\11\27 0027 13:58
+    * @param []
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
     List<GameSubContract> findList();
-
+    
+    /*
+    *  
+    *
+    * @author hlx
+    * @date 2018\11\27 0027 13:58
+    * @param [channelIds]
+    * @return java.util.List<com.chenyou.pojo.GameSubContract>
+    */
     List<GameSubContract> findList(String[] channelIds);
+
+
+    /*
+    *
+    * 修改消息
+    * @author hlx
+    * @date 2018\11\27 0027 14:15
+    * @param []
+    * @return int
+    */
+    int updateGameSubContract(GameSubContract gameSubContract) throws BizException;
+
+
+    /*
+    *
+    * 根据id获取GameSubContract的信息
+    * @author hlx
+    * @date 2018\11\27 0027 14:26
+    * @param [id]
+    * @return com.chenyou.pojo.GameSubContract
+    */
+    GameSubContract getGameSubContract(Integer id);
 
 
 
